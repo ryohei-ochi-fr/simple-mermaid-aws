@@ -83,3 +83,6 @@ architecture-beta
 
     cert:B --> T:dns
 ```
+
+## ローカルプレビューだといい感じなんだけどね
+![alt text](local-preview.png)

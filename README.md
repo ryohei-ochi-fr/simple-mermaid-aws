@@ -46,6 +46,18 @@ Markdown Preview Enhanced: Customize Preview HTML Head (Global)
 
 
 ## AWS構成図をコードで作図する
+
+iConifyのサイトで使えるアイコンを探す。
+
+https://icon-sets.iconify.design/?query=aws&search-page=1
+
+### FutureRays労働組合のサイト(サーバーレス)
+- Route53でドメインを取得(年額3ドル)し、ドメインを管理する(月額1ドル)
+- ACMでSSL証明書を取得(無料)
+- S3で静的コンテンツを保管する(月額数セント)
+- CloudFront(CDN) 全世界へ低レイテンシーで配信中
+- GitHub Actions(CI/CD)により記事がコミットされると、SSG(静的サイトジェネレータ)により記事が更新される
+
 ``` mermaid
 architecture-beta
     service dns(logos:aws-route53)[Route53]
@@ -54,34 +66,24 @@ architecture-beta
 
     service storage(logos:aws-s3)[S3]
 
-    group vpc(logos:aws-vpc)[VPC]
-
-    service loadbalancer(logos:aws-elb)[ALB] in vpc
-
-    group private_subnet1[Private Subnet 1] in vpc
-    service appserver1(logos:aws-ec2)[EC2 Instance 1] in private_subnet1
-    service db_primary(logos:aws-aurora)[Aurora Primary] in private_subnet1
-
-    group private_subnet2[Private Subnet 2] in vpc
-    service appserver2(logos:aws-ec2)[EC2 Instance 2] in private_subnet2
-    service db_replica(logos:aws-aurora)[Aurora Replica] in private_subnet2
-
-    junction asg_junction in vpc
-    junction aurora_junction in vpc
-
     dns:R --> L:cdn
-    cdn:R --> L:loadbalancer
-    loadbalancer:R -- L:asg_junction
-    asg_junction:T --> B:appserver1
-    asg_junction:B --> T:appserver2
-    appserver1:R <--> L:db_primary
-    appserver2:R <--> L:db_replica
     cdn:T <-- B:storage
 
-    db_replica:T <-- B:aurora_junction
-    aurora_junction:T -- B:db_primary
-
     cert:B --> T:dns
+```
+
+### SVNサーバ(アンマネージド)
+- EC2(t4g.nano)インスタンスにAmazon Linux 2023を入れて利用中(夜間停止を行い月額6ドル程度)
+- Elastic IPにより、グローバルIPアドレスを固定化(月額1ドルちょい)
+- Cloud Trailにて、監査証跡を月次で保管中(無料)
+
+``` mermaid
+architecture-beta
+service EIP(logos:aws-eip)[EIP]
+group vpc(logos:aws-vpc)[VPC]
+
+    group private_subnet1[Private Subnet] in vpc
+    service appserver1(logos:aws-ec2)[EC2 Instance] in private_subnet1
 ```
 
 ## ローカルプレビューだといい感じなんだけどね

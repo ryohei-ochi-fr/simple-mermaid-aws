@@ -79,11 +79,13 @@ architecture-beta
 
 ``` mermaid
 architecture-beta
-service EIP(logos:aws-eip)[EIP]
-group vpc(logos:aws-vpc)[VPC]
+  service EIP(logos:aws-eip)[ElasticIP]
+  group vpc(logos:aws-vpc)[VPC]
 
-    group private_subnet1[Private Subnet] in vpc
-    service appserver1(logos:aws-ec2)[EC2 Instance] in private_subnet1
+  group private_subnet1[Private Subnet] in vpc
+  service appserver1(logos:aws-ec2)[EC2 Instance] in private_subnet1
+  
+  EIP:R --> L:appserver1
 ```
 
 ## ローカルプレビューだといい感じなんだけどね
